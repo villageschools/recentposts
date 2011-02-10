@@ -1,0 +1,72 @@
+<?php
+	// $Id$
+
+    /**
+    * Display help and module information
+    * @param path which path of the site we're displaying help
+    * @param arg array that holds the current path as would be returned from arg() function
+    * @return help text for the path
+    */
+    function recentposts_help($path, $arg) 
+    {
+        $output = ''; 
+      
+        switch ($path) 
+        {
+            case ("admin/help#blog"):
+            {
+                $output = '<p>'.  t("Displays a list of recent blog posts") .'</p>';
+                break;
+            }
+        }
+
+        return $output;
+    }
+
+
+    /**
+    * Valid permissions for this module
+    * @return array An array of valid permissions for the onthisdate module
+    */
+    function recentposts_perm() 
+    {
+        return array('administer blog content');
+    }
+    
+    
+    /**
+    * Implementation of hook_block().
+    * @param string $op one of "list", "view", "save" and "configure"
+    * @param integer $delta code to identify the block
+    * @param array $edit only for "save" operation
+    */
+    function recentposts_block($op = 'list', $delta = 0, $edit = array()) 
+    {
+        $block = array();
+        
+        switch ($op)
+        {
+            case ("list"):
+            {
+                $block[0]["info"] = t("Recent blog posts (mine)");
+                break;
+            }
+            
+            case ("view"):
+            {
+                $block["subject"] = "";  
+                $block["content"] = "";
+                
+                $listlength = "5";
+                $nodetype = "blog";
+    
+                $block["content"] = "<h3>Steve and Susan's latest updates</h3>";
+                $block["content"] .= node_title_list(db_query_range(db_rewrite_sql("SELECT n.nid, n.title, n.created FROM {node} n WHERE n.type = '%s' AND n.status = 1 ORDER BY n.created DESC"), $nodetype, 0, $listlength));
+                $block["content"] .= "<a href=\"letters.html\">Read more &raquo;</a>";
+
+                break;
+            }
+        }  
+
+        return $block;
+    }

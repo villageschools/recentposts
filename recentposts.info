@@ -1,0 +1,5 @@
+; $Id$
+name = Recent Posts
+description = The list of recent posts
+core = 6.x
+package = Other
